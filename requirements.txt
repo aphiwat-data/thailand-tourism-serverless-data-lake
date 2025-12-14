@@ -1,0 +1,4 @@
+boto3==1.*
+python-dotenv==1.*
+pandas==2.*
+pyarrow==17.*

@@ -11,4 +11,14 @@ __pycache__/
 # environment
 .env
 .venv   
+venv/
+
+# logs
+logs/
+
+# mac
 .DS_Store
+
+# data (keep folder structure, ignore files)
+data/**
+!data/**/.keep
