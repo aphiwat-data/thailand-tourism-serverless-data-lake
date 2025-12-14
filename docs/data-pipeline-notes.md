@@ -37,3 +37,5 @@ Raw (CSV) → Processed (Parquet) → Analytics-ready tables
 - Simple folder structure for easy discovery
 
 Example path:
+Processed Parquet data is exposed to Athena using a partitioned external table,
+enabling efficient analytical queries by year and month.
