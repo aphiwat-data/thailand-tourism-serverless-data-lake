@@ -1,33 +1,39 @@
 # Data Pipeline Notes
 
 ## Dataset
-Thailand domestic tourism statistics (2019–2023), monthly provincial data.
-Key metrics include tourist numbers, occupancy ratio, and tourism revenue.
+Thailand domestic tourism statistics (2019–2023), monthly data at province level.
 
-## Why this dataset
-- Public, structured, time-series data
-- Clear grain (province + month)
-- Suitable for analytics-oriented data modeling
+Key fields include:
+- date (month-level)
+- province / region
+- metric type (tourists, revenue, occupancy)
+- value
+
+The dataset is public and structured, suitable for analytics-oriented processing.
+
+---
+
+## Purpose
+This project demonstrates an end-to-end data engineering workflow
+using a simple serverless-style data lake on AWS.
+
+The focus is on data flow, structure, and readiness for analytics
+rather than visualization or advanced modeling.
+
+---
 
 ## Data Flow Overview
-Raw data is stored in S3, transformed into analytics-ready tables, and queried via Athena.
+Raw data is ingested into Amazon S3, transformed into analytics-ready formats,
+and queried using Amazon Athena.
 
-Raw → Processed → Curated
+Flow:
+Raw (CSV) → Processed (Parquet) → Analytics-ready tables
 
-## Ingestion
-- Source: CSV / Parquet
-- Ingested manually for learning purposes
-- Stored in S3 raw layer partitioned by year and month
+---
 
-## Processing
-- Data cleaned and standardized
-- Converted to Parquet
-- Partitioned for query efficiency
+## Raw Layer
+- Stored in Amazon S3
+- Original CSV files are kept unchanged
+- Simple folder structure for easy discovery
 
-## Data Model (High-level)
-- Fact table: tourism_metrics
-- Dimensions: date, province, region
-
-## Output
-- Curated tables ready for analytical queries
-- Queryable using Amazon Athena
+Example path:
