@@ -1,6 +1,19 @@
-# data
+# =========================
+# Data files
+# =========================
 data/
-
-# parquet / large files
+*.csv
 *.parquet
 
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.venv
