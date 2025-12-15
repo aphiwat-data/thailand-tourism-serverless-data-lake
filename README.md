@@ -36,3 +36,23 @@ SELECT *
 FROM vw_tourism_monthly_analytics
 WHERE year = 2022
 ORDER BY month;
+
+# Raw Data Source Explanation
+
+This project uses Thailand domestic tourism data as the raw source.
+
+## Data Source
+- Provider: Ministry of Tourism and Sports, Thailand
+- Dataset: Domestic tourism statistics
+- Granularity: Monthly, province-level
+- Time range: 2019–2023
+- Original format: CSV
+
+## Raw Data Handling
+- Raw data is stored in Amazon S3 (raw zone)
+- Raw files are not committed to GitHub
+- AWS Glue (PySpark) is used to transform raw data into processed and curated layers
+
+## Purpose
+This repository focuses on data pipeline design, transformation logic,
+and analytics-ready datasets rather than raw data storage.
