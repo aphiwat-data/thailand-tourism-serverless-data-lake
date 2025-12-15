@@ -1,12 +1,38 @@
-# Thailand Tourism Serverless Data Lake (2019–2023)
+# Tourism Data Lake Analytics (AWS)
 
-Personal data engineering project to build a small serverless data lake on AWS using Thailand domestic tourism data (2019–2023).
+## Overview
+This project demonstrates an end-to-end analytics data lake built on AWS
+using real tourism data. The pipeline ingests raw CSV data, transforms it
+using AWS Glue (PySpark), and enables analytical queries via Amazon Athena.
 
-## Goal
-- Store raw data in S3
-- Transform it into analytics-ready tables (fact + dimensions)
-- Query curated data with Athena
+## Architecture
+Raw Zone (S3)
+→ Processed Zone (Parquet, partitioned by year/month)
+→ Fact Table (Athena)
+→ Analytics Views (Aggregated KPIs)
 
-## Tech stack (planned)
-- AWS S3, AWS Glue (PySpark), Glue Data Catalog, Athena
-- Python / PySpark, SQL
+## Tech Stack
+- AWS S3 (Data Lake Storage)
+- AWS Glue (PySpark ETL)
+- Amazon Athena (SQL Analytics)
+- Parquet + Partitioning
+- SQL Views for BI consumption
+
+## Key Features
+- Partitioned Parquet tables (year/month)
+- Fact table design for analytics
+- Aggregated analytics view (monthly KPIs)
+- Metadata embedded for governance
+
+## Example Analytics
+- Monthly tourist count
+- Revenue by type
+- Ratio-based metrics
+- Ready for BI / dashboard integration
+
+## Sample Query
+```sql
+SELECT *
+FROM vw_tourism_monthly_analytics
+WHERE year = 2022
+ORDER BY month;

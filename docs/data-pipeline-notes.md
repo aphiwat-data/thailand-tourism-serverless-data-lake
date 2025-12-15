@@ -1,41 +1,79 @@
-# Data Pipeline Notes
+Data Pipeline Notes
 
-## Dataset
-Thailand domestic tourism statistics (2019–2023), monthly data at province level.
+Dataset
 
-Key fields include:
-- date (month-level)
-- province / region
-- metric type (tourists, revenue, occupancy)
-- value
+Thailand domestic tourism data (2019–2023), monthly data by province.
+Metrics include tourist counts, revenue, and ratio-based indicators.
 
-The dataset is public and structured, suitable for analytics-oriented processing.
+⸻
 
----
+Goal
 
-## Purpose
-This project demonstrates an end-to-end data engineering workflow
-using a simple serverless-style data lake on AWS.
+Build a simple serverless data pipeline on AWS that can take raw CSV data
+and turn it into analytics-ready tables.
 
-The focus is on data flow, structure, and readiness for analytics
-rather than visualization or advanced modeling.
+Focus is on data flow and structure, not dashboards.
 
----
+⸻
 
-## Data Flow Overview
-Raw data is ingested into Amazon S3, transformed into analytics-ready formats,
-and queried using Amazon Athena.
+Pipeline Flow
 
-Flow:
-Raw (CSV) → Processed (Parquet) → Analytics-ready tables
+Raw CSV (S3)
+→ Glue (Spark)
+→ Processed Parquet (year/month partition)
+→ Fact table (Athena)
+→ Analytics view
 
----
+Raw Layer
+	•	Stored in S3 as CSV
+	•	No transformation
+	•	Used as the source of truth
 
-## Raw Layer
-- Stored in Amazon S3
-- Original CSV files are kept unchanged
-- Simple folder structure for easy discovery
+Path: s3://aphiwat-tourism-data-lake-dev/raw/tourism_domestic/
 
-Example path:
-Processed Parquet data is exposed to Athena using a partitioned external table,
-enabling efficient analytical queries by year and month.
+Processed Layer
+	•	Clean and parse date
+	•	Extract year and month
+	•	Convert to Parquet
+	•	Partition by year/month for faster Athena queries
+
+    Path: s3://aphiwat-tourism-data-lake-dev/processed/tourism_domestic/
+
+    Curated Layer (Fact)
+	•	Aggregated monthly metrics
+	•	Only numeric values kept
+	•	Partitioned by year/month
+	•	Used directly for analytics
+
+Table: fact_tourism_metrics
+
+Analytics View
+
+A single view is created to standardize metrics:
+	•	Groups metrics (tourist / revenue / ratio)
+	•	Provides monthly totals
+	•	Ready for BI or further analysis
+
+View: vw_tourism_monthly_analytics
+
+Data Checks
+	•	Partition coverage checked for all years
+	•	Schema mismatch issues fixed during development
+	•	Verified aggregation results in Athena
+
+⸻
+
+Tools
+	•	S3
+	•	AWS Glue (Spark)
+	•	Athena
+	•	Parquet + partitioning
+
+⸻
+
+Notes
+
+This project focuses on core data engineering concepts:
+ETL design, partitioning, schema handling, and analytics enablement.
+
+No automation or dashboard was added to keep the scope realistic.

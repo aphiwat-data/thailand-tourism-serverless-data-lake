@@ -1,7 +1,12 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, year, month, to_date
+from pyspark.sql.functions import (
+    col,
+    to_date,
+    year,
+    month
+)
 
-RAW_PATH = "s3://aphiwat-tourism-data-lake-dev/raw/tourism_domestic/year=2019-2023/"
+RAW_PATH = "s3://aphiwat-tourism-data-lake-dev/raw/tourism_domestic/"
 PROCESSED_PATH = "s3://aphiwat-tourism-data-lake-dev/processed/tourism_domestic/"
 
 spark = (
@@ -10,29 +15,36 @@ spark = (
     .getOrCreate()
 )
 
-# Read raw CSV
-df = (
+spark.sparkContext.setLogLevel("WARN")
+
+
+df_raw = (
     spark.read
     .option("header", "true")
+    .option("inferSchema", "true")
     .csv(RAW_PATH)
 )
 
-# Parse date and extract year / month
+
 df_clean = (
-    df
+    df_raw
+    # parse date column
     .withColumn("date_parsed", to_date(col("date")))
-    .withColumn("year", year(col("date_parsed")))
-    .withColumn("month", month(col("date_parsed")))
+    # extract partitions
+    .withColumn("year", year(col("date_parsed")).cast("string"))
+    .withColumn("month", month(col("date_parsed")).cast("string"))
+    # drop helper column
     .drop("date_parsed")
 )
 
-# Write partitioned Parquet
+
 (
     df_clean
     .write
-    .mode("overwrite")
-    .partitionBy("year", "month")
+    .mode("overwrite")              # overwrite entire processed layer
+    .partitionBy("year", "month")   # partition strategy
     .parquet(PROCESSED_PATH)
 )
+
 
 spark.stop()
