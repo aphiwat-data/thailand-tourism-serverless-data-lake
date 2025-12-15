@@ -1,9 +1,6 @@
-# ignore all data by default
-data/*
+# data
+data/
 
-# allow sample and raw source explanation
-!data/raw_source/
-!data/raw_source/**
-!data/sample/
-!data/sample/**
+# parquet / large files
+*.parquet
 
