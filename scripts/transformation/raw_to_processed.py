@@ -1,28 +1,32 @@
-import os
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, substring
+from pyspark.sql.functions import col, year, month, to_date
 
 RAW_PATH = "s3://aphiwat-tourism-data-lake-dev/raw/tourism_domestic/year=2019-2023/"
 PROCESSED_PATH = "s3://aphiwat-tourism-data-lake-dev/processed/tourism_domestic/"
 
 spark = (
     SparkSession.builder
-    .appName("raw-to-processed-tourism")
+    .appName("tourism-raw-to-processed")
     .getOrCreate()
 )
 
+# Read raw CSV
 df = (
     spark.read
     .option("header", "true")
     .csv(RAW_PATH)
 )
 
+# Parse date and extract year / month
 df_clean = (
     df
-    .withColumn("year", substring(col("date"), 1, 4))
-    .withColumn("month", substring(col("date"), 6, 2))
+    .withColumn("date_parsed", to_date(col("date")))
+    .withColumn("year", year(col("date_parsed")))
+    .withColumn("month", month(col("date_parsed")))
+    .drop("date_parsed")
 )
 
+# Write partitioned Parquet
 (
     df_clean
     .write
